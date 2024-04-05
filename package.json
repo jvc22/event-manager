@@ -1,5 +1,5 @@
 {
-  "name": "event-manager-web",
+  "name": "event-manager-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
