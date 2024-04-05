@@ -114,7 +114,8 @@ export function AttendeesList() {
         <tfoot>
           <tr>
             <TableCell colSpan={3}>
-              Mostrando 10 de {attendees.length} item(s)
+              Mostrando {attendees.slice((page - 1) * 10, page * 10).length} de{' '}
+              {attendees.length} item(s)
             </TableCell>
             <TableCell className="text-right" colSpan={3}>
               <div className="inline-flex items-center gap-8">
