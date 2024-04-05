@@ -6,15 +6,27 @@ import {
   MoreHorizontal,
   Search,
 } from 'lucide-react'
+
 import { IconButton } from './icon-button'
+
 import { Table } from './table/table'
 import { TableHeader } from './table/table-header'
 import { TableCell } from './table/table-cell'
 import { TableRow } from './table/table-row'
+
 import { ChangeEvent, useState } from 'react'
+import { attendees } from '../data/attendee'
+
+import dayjs from 'dayjs'
+import 'dayjs/locale/pt-br'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
+dayjs.locale('pt-br')
 
 export function AttendeesList() {
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
 
   function onSearchInputChange(ev: ChangeEvent<HTMLInputElement>) {
     console.log(ev.target.value)
@@ -51,9 +63,9 @@ export function AttendeesList() {
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: 8 }).map((_, index) => (
+          {attendees.slice((page - 1) * 10, page * 10).map((attendee) => (
             <TableRow
-              key={index}
+              key={attendee.id}
               className="border-b border-white/10 hover:bg-white/5"
             >
               <TableCell>
@@ -62,17 +74,17 @@ export function AttendeesList() {
                   className="size-4 bg-black/20 rounded border-white/10"
                 />
               </TableCell>
-              <TableCell>163310</TableCell>
+              <TableCell>{attendee.id}</TableCell>
               <TableCell>
                 <div className="flex flex-col gap-1">
                   <span className="font-semibold text-white">
-                    João Victor Costa
+                    {attendee.name}
                   </span>
-                  <span>joaovictor@email.com</span>
+                  <span>{attendee.email}</span>
                 </div>
               </TableCell>
-              <TableCell>7 dias atrás</TableCell>
-              <TableCell>3 dias atrás</TableCell>
+              <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
+              <TableCell>{dayjs().to(attendee.checkedInAt)}</TableCell>
               <TableCell>
                 <IconButton isTransparent>
                   <MoreHorizontal className="size-4" />
@@ -83,10 +95,14 @@ export function AttendeesList() {
         </tbody>
         <tfoot>
           <tr>
-            <TableCell colSpan={3}>Mostrando 10 de 228 item(s)</TableCell>
+            <TableCell colSpan={3}>
+              Mostrando 10 de {attendees.length} item(s)
+            </TableCell>
             <TableCell className="text-right" colSpan={3}>
               <div className="inline-flex items-center gap-8">
-                <span>Página 1 de 23</span>
+                <span>
+                  Página {page} de {Math.ceil(attendees.length / 10)}
+                </span>
 
                 <div className="flex gap-1.5">
                   <IconButton>
