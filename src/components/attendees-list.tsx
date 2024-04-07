@@ -56,6 +56,7 @@ export function AttendeesList() {
   const totalPages = Math.ceil(total / 10)
 
   function onSearchInputChange(ev: ChangeEvent<HTMLInputElement>) {
+    setPage(1)
     setSearch(ev.target.value)
   }
 
