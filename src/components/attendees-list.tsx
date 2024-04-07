@@ -32,7 +32,15 @@ interface Attendee {
 }
 
 export function AttendeesList() {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(() => {
+    const url = new URL(window.location.toString())
+
+    if (url.searchParams.has('search')) {
+      return url.searchParams.get('search') ?? ''
+    }
+
+    return ''
+  })
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString())
 
@@ -66,11 +74,17 @@ export function AttendeesList() {
 
   const totalPages = Math.ceil(total / 10)
 
+  function setCurrentSearch(search: string) {
+    const url = new URL(window.location.toString())
+    url.searchParams.set('search', search)
+    window.history.pushState({}, '', url)
+
+    setSearch(search)
+  }
+
   function setCurrentPage(page: number) {
     const url = new URL(window.location.toString())
-
     url.searchParams.set('page', String(page))
-
     window.history.pushState({}, '', url)
 
     setPage(page)
@@ -78,7 +92,7 @@ export function AttendeesList() {
 
   function onSearchInputChange(ev: ChangeEvent<HTMLInputElement>) {
     setCurrentPage(1)
-    setSearch(ev.target.value)
+    setCurrentSearch(ev.target.value)
   }
 
   function goToFirstPage() {
@@ -104,6 +118,7 @@ export function AttendeesList() {
         <div className="w-72 flex items-center gap-3 px-3 py-1.5 border rounded-lg border-white/10">
           <Search className="size-4 text-emerald-300" />
           <input
+            value={search}
             onChange={onSearchInputChange}
             className="p-0 border-0 bg-transparent flex-1 outline-none text-sm focus:ring-0"
             placeholder="Buscar participante..."
