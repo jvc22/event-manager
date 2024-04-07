@@ -14,8 +14,7 @@ import { TableHeader } from './table/table-header'
 import { TableCell } from './table/table-cell'
 import { TableRow } from './table/table-row'
 
-import { ChangeEvent, useState } from 'react'
-import { attendees } from '../data/attendee'
+import { ChangeEvent, useEffect, useState } from 'react'
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
@@ -24,14 +23,31 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 dayjs.locale('pt-br')
 
+interface Attendee {
+  id: number
+  name: string
+  email: string
+  createdAt: string
+  checkedInAt?: string
+}
+
 export function AttendeesList() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
+  const [attendees, setAttendees] = useState<Attendee[]>([])
+
+  useEffect(() => {
+    fetch(
+      'http://localhost:3333/events/9e9bd979-9d10-4915-b339-3786b1634f33/attendees',
+    )
+      .then((response) => response.json())
+      .then((data) => setAttendees(data.attendees))
+  }, [page])
 
   const totalPages = Math.ceil(attendees.length / 10)
 
   function onSearchInputChange(ev: ChangeEvent<HTMLInputElement>) {
-    console.log(ev.target.value)
+    setSearch(ev.target.value)
   }
 
   function goToFirstPage() {
@@ -81,7 +97,7 @@ export function AttendeesList() {
           </tr>
         </thead>
         <tbody>
-          {attendees.slice((page - 1) * 10, page * 10).map((attendee) => (
+          {attendees.map((attendee) => (
             <TableRow
               key={attendee.id}
               className="border-b border-white/10 hover:bg-white/5"
@@ -114,8 +130,7 @@ export function AttendeesList() {
         <tfoot>
           <tr>
             <TableCell colSpan={3}>
-              Mostrando {attendees.slice((page - 1) * 10, page * 10).length} de{' '}
-              {attendees.length} item(s)
+              Mostrando {attendees.length} de {attendees.length} item(s)
             </TableCell>
             <TableCell className="text-right" colSpan={3}>
               <div className="inline-flex items-center gap-8">
