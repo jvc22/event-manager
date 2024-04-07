@@ -43,7 +43,10 @@ export function AttendeesList() {
       'http://localhost:3333/events/9e9bd979-9d10-4915-b339-3786b1634f33/attendees',
     )
     url.searchParams.set('pageIndex', String(page - 1))
-    url.searchParams.set('query', search)
+
+    if (search.length > 0) {
+      url.searchParams.set('query', search)
+    }
 
     fetch(url)
       .then((response) => response.json())
