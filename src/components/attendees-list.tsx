@@ -33,7 +33,9 @@ interface Attendee {
 
 export function AttendeesList() {
   const [search, setSearch] = useState('')
-  const [page, setPage] = useState(1)
+  // const [page, setPage] = useState(1)
+
+  const page = 1
 
   const [total, setTotal] = useState(0)
   const [attendees, setAttendees] = useState<Attendee[]>([])
@@ -58,25 +60,33 @@ export function AttendeesList() {
 
   const totalPages = Math.ceil(total / 10)
 
+  function setCurrentPage(page: number) {
+    const url = new URL(window.location.toString())
+
+    url.searchParams.set('page', String(page))
+
+    window.history.pushState({}, '', url)
+  }
+
   function onSearchInputChange(ev: ChangeEvent<HTMLInputElement>) {
-    setPage(1)
+    setCurrentPage(1)
     setSearch(ev.target.value)
   }
 
   function goToFirstPage() {
-    setPage(1)
+    setCurrentPage(1)
   }
 
   function goToPreviousPage() {
-    setPage(page - 1)
+    setCurrentPage(page - 1)
   }
 
   function goToNextPage() {
-    setPage(page + 1)
+    setCurrentPage(page + 1)
   }
 
   function goToLastPage() {
-    setPage(totalPages)
+    setCurrentPage(totalPages)
   }
 
   return (
