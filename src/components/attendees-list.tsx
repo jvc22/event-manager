@@ -87,7 +87,7 @@ export function AttendeesList() {
           <Search className="size-4 text-emerald-300" />
           <input
             onChange={onSearchInputChange}
-            className="p-0 border-0 bg-transparent flex-1 outline-none text-sm"
+            className="p-0 border-0 bg-transparent flex-1 outline-none text-sm focus:ring-0"
             placeholder="Buscar participante..."
           />
         </div>
